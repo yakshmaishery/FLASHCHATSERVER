@@ -2,7 +2,7 @@ const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const cors = require('cors');
-
+const path = require('path');
 const app = express();
 
 // Enable CORS for all origins
@@ -16,6 +16,10 @@ const io = new Server(server, {
       origin: '*', // Allow all origins. You can restrict to specific domains
       methods: ['GET', 'POST']
    }
+});
+
+app.get('/', function(req, res) {
+  res.sendFile(path.join(__dirname, '/Index.html'));
 });
 
 // Listen for client connections
