@@ -53,6 +53,15 @@ io.on('connection', (socket) => {
    socket.on("endFileTransferAnotherCALLBACK", ({ msg, UserID, AnotherID }) => {
       socket.broadcast.emit("endFileTransferUserCALLBACK", { msg, UserID, AnotherID })
    })
+   socket.on('VideoCallStart', (data) => {
+      io.emit('VideoCallStart_BROADCAST', data); // broadcast message to all clients
+   });
+   socket.on('VideoCalldataURL', (data) => {
+      io.emit('VideoCalldataURL_BROADCAST', data); // broadcast message to all clients
+   });
+   socket.on('VideoCallStops', (data) => {
+      io.emit('VideoCallStops_BROADCAST', data); // broadcast message to all clients
+   });
 
    socket.on('disconnect', () => {
       //  console.log('User disconnected:', socket.id);
