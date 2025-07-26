@@ -62,6 +62,16 @@ io.on('connection', (socket) => {
    socket.on('VideoCallStops', (data) => {
       io.emit('VideoCallStops_BROADCAST', data); // broadcast message to all clients
    });
+   
+   socket.on('VideoCallScreenStart', (data) => {
+      io.emit('VideoCallScreenStart_BROADCAST', data); // broadcast message to all clients
+   });
+   socket.on('VideoCallScreendataURL', (data) => {
+      io.emit('VideoCallScreendataURL_BROADCAST', data); // broadcast message to all clients
+   });
+   socket.on('VideoCallScreenStops', (data) => {
+      io.emit('VideoCallScreenStops_BROADCAST', data); // broadcast message to all clients
+   });
 
    socket.on('disconnect', () => {
       //  console.log('User disconnected:', socket.id);
