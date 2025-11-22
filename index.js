@@ -24,62 +24,90 @@ app.get('/', function(req, res) {
 
 // Listen for client connections
 io.on('connection', (socket) => {
-   //   console.log('A user connected:', socket.id);
+   // broadcast Connect to all clients
    socket.on('CreateConnection', (data) => {
       let socketID = socket.id
       data["socketID"]=socketID
-      io.emit('CreateConnection_BROADCAST', data); // broadcast message to all clients
+      io.emit('CreateConnection_BROADCAST', data);
    });
 
+   // broadcast Connect Callback to all clients
    socket.on('CreateConnection_CallbackServer', (data) => {
       let socketID = socket.id
       data["socketID"]=socketID
-      io.emit('CreateConnection_Callback', data); // broadcast message to all clients
+      io.emit('CreateConnection_Callback', data); 
    });
 
+   // Leave connection
    socket.on('LeaveConnection', (data) => {
-      io.emit('LeaveConnection_BROADCAST', data); // broadcast message to all clients
+      io.emit('LeaveConnection_BROADCAST', data); 
    });
 
+   // Chat Messages
    socket.on('SocketChat', (data) => {
-      io.emit('SocketChat_BROADCAST', data); // broadcast message to all clients
+      io.emit('SocketChat_BROADCAST', data); 
    });
 
+   // Start Sharing File
    socket.on("startFileTransfer", ({ type, name, size, AnotherID }) => {
       socket.broadcast.emit("startFileTransferAnother", { type, name, size, AnotherID })
    })
+
+   // Sharing Chunk File
    socket.on("chunkFileTransfer", ({ type, name, size, data, offset, AnotherID }) => {
       socket.broadcast.emit("chunkFileTransferAnother", { type, name, size, data, offset, AnotherID })
    })
+
+   // End Sharing File
    socket.on("endFileTransfer", ({ type, name, AnotherID }) => {
       socket.broadcast.emit("endFileTransferAnother", { type, name, AnotherID })
    })
+
+   // End Sharing File Callback
    socket.on("endFileTransferAnotherCALLBACK", ({ msg, UserID, AnotherID }) => {
       socket.broadcast.emit("endFileTransferUserCALLBACK", { msg, UserID, AnotherID })
    })
+
+   // Start Sharing Video call
    socket.on('VideoCallStart', (data) => {
-      io.emit('VideoCallStart_BROADCAST', data); // broadcast message to all clients
+      io.emit('VideoCallStart_BROADCAST', data);
    });
+
+   // Image base64 Sharing Video call
    socket.on('VideoCalldataURL', (data) => {
-      io.emit('VideoCalldataURL_BROADCAST', data); // broadcast message to all clients
+      io.emit('VideoCalldataURL_BROADCAST', data);
    });
+
+   // End Sharing Video call
    socket.on('VideoCallStops', (data) => {
-      io.emit('VideoCallStops_BROADCAST', data); // broadcast message to all clients
+      io.emit('VideoCallStops_BROADCAST', data);
    });
    
+   // Start Sharing Screen Share
    socket.on('VideoCallScreenStart', (data) => {
-      io.emit('VideoCallScreenStart_BROADCAST', data); // broadcast message to all clients
+      io.emit('VideoCallScreenStart_BROADCAST', data);
    });
+
+   // Image base64 Sharing Screen Share
    socket.on('VideoCallScreendataURL', (data) => {
-      io.emit('VideoCallScreendataURL_BROADCAST', data); // broadcast message to all clients
+      io.emit('VideoCallScreendataURL_BROADCAST', data);
    });
+
+   // End Sharing Screen Share
    socket.on('VideoCallScreenStops', (data) => {
-      io.emit('VideoCallScreenStops_BROADCAST', data); // broadcast message to all clients
+      io.emit('VideoCallScreenStops_BROADCAST', data);
+   });
+
+   // Disconnect an User by force
+   socket.on('DisconnectCurrentConnect', (data) => {
+      const targetId = io.sockets.sockets.get(data.socketID)
+      if(targetId){
+         targetId.disconnect(true)
+      }
    });
 
    socket.on('disconnect', () => {
-      //  console.log('User disconnected:', socket.id);
-      io.emit('SOCKETdisconnect', {socketID:socket.id}); // broadcast message to all clients
+      io.emit('SOCKETdisconnect', {socketID:socket.id});
    });
 });
 
