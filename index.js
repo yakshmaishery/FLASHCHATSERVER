@@ -26,10 +26,14 @@ app.get('/', function(req, res) {
 io.on('connection', (socket) => {
    //   console.log('A user connected:', socket.id);
    socket.on('CreateConnection', (data) => {
+      let socketID = socket.id
+      data["socketID"]=socketID
       io.emit('CreateConnection_BROADCAST', data); // broadcast message to all clients
    });
 
    socket.on('CreateConnection_CallbackServer', (data) => {
+      let socketID = socket.id
+      data["socketID"]=socketID
       io.emit('CreateConnection_Callback', data); // broadcast message to all clients
    });
 
@@ -75,6 +79,7 @@ io.on('connection', (socket) => {
 
    socket.on('disconnect', () => {
       //  console.log('User disconnected:', socket.id);
+      io.emit('SOCKETdisconnect', {socketID:socket.id}); // broadcast message to all clients
    });
 });
 
